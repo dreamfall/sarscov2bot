@@ -52,7 +52,9 @@ class UpdateWorker
   def update_channel_topic(entry)
     Dotenv.load
 
-    title = "CoronaV [🦠#{number_with_delimiter(entry.total_cases_number)} / 💚 #{number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)}]"
+    cfr = (entry.deaths_number.to_f / entry.total_cases_number * 100).round(2)
+
+    title = "CoronaV [🦠#{number_with_delimiter(entry.total_cases_number)} / 💚 #{number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / CFR #{cfr}%]"
 
     Telegram::Bot::Client.run(ENV["TELEGRAM_TOKEN"]) do |bot|
       bot.api.setChatTitle(chat_id: ENV["CHAT_ID"], title: title)
