@@ -1,1 +1,1 @@
-worker: be sidekiq -r ./jobs/update_worker.rb
+worker: bundle exec sidekiq -r ./jobs/update_worker.rb
