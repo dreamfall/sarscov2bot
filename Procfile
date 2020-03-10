@@ -1,2 +1,1 @@
-require "sinatra/activerecord"
-require "models/statistical_entry"
+be sidekiq -r ./jobs/update_worker.rb
