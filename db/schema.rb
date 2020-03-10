@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_09_191301) do
+ActiveRecord::Schema.define(version: 2020_03_10_175320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "country_statistical_entries", force: :cascade do |t|
+    t.string "country", null: false
+    t.integer "total_cases_number", default: 0, null: false
+    t.integer "deaths_number", default: 0, null: false
+    t.integer "recovered_number", default: 0, null: false
+    t.datetime "created_at", null: false
+  end
 
   create_table "statistical_entries", force: :cascade do |t|
     t.integer "total_cases_number", null: false
