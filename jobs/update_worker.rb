@@ -30,7 +30,7 @@ class UpdateWorker
     last_entry = StatisticalEntry.order(:created_at).last
     new_entry = StatisticalEntry.new(attributes)
 
-    if new_entry.differs_to?(last_entry) && new_entry.save
+    if (!last_entry || new_entry.differs_to?(last_entry)) && new_entry.save
       update_channel_topic(new_entry).to_yaml
     else
       puts "Stats unchanged. Skipping..."
