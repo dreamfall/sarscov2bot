@@ -19,28 +19,18 @@ class UpdateWorker
     numbers_row = tbody.css("tr")[3]
     number_cells = numbers_row.css("td")
 
-    total_cases_number = cell_to_number(number_cells[0])
-    deaths_number = cell_to_number(number_cells[1])
-    recovered_number = cell_to_number(number_cells[2])
+    attributes = {
+      total_cases_number: cell_to_number(number_cells[0]),
+      deaths_number: cell_to_number(number_cells[1]),
+      recovered_number: cell_to_number(number_cells[2])
+    }
 
-    puts "Cases: #{total_cases_number}. Deaths: #{deaths_number}. Recovered: #{recovered_number}"
+    puts attributes
 
     last_entry = StatisticalEntry.order(:created_at).last
-    new_entry = StatisticalEntry.new
+    new_entry = StatisticalEntry.new(attributes)
 
-    if !last_entry || last_entry.total_cases_number != total_cases_number
-      new_entry.total_cases_number = total_cases_number
-    end
-
-    if !last_entry || last_entry.deaths_number != deaths_number
-      new_entry.deaths_number = deaths_number
-    end
-
-    if !last_entry || last_entry.recovered_number != recovered_number
-      new_entry.recovered_number = recovered_number
-    end
-
-    if new_entry.save
+    if new_entry.differs_to?(last_entry) && new_entry.save
       update_channel_topic(new_entry).to_yaml
     else
       puts "Stats unchanged. Skipping..."
