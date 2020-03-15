@@ -1,7 +1,7 @@
 require "sinatra/activerecord"
 
 class CountryStatisticalEntry < ActiveRecord::Base
-  validates :total_cases_number, presence: true, numericality: { greater_than: 0 }
+  validates :total_cases_number, presence: true, numericality: true
   validates :deaths_number, :recovered_number, numericality: true
   validates :country, presence: true
 
