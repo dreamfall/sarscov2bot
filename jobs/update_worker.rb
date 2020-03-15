@@ -50,7 +50,7 @@ class UpdateWorker
     # Skipping empty rows and headers
     tbody.css("tr")[6..-1].each do |row|
       cells = row.css("td")
-      name = cells[0].text
+      name = cells[0].text.delete("*")
 
       break if name == "TOTAL"
 
