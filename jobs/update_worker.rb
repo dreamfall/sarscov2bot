@@ -63,7 +63,11 @@ class UpdateWorker
       entry = CountryStatisticalEntry.find_or_initialize_by(country: name)
 
       if entry.is_going_to_be_changed?(attributes)
-        updates << "#{name}:\n#{formatted_changes_by_country(attributes, entry)}"
+        if entry.new_record?
+          updates << "#{name} 🆕:\n#{formatted_changes_by_country(attributes, entry)}"
+        else
+          updates << "#{name}:\n#{formatted_changes_by_country(attributes, entry)}"
+        end
 
         entry.attributes = attributes
         entry.save
