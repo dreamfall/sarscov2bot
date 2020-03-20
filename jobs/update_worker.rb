@@ -58,8 +58,8 @@ class UpdateWorker
 
       attributes = {
         total_cases_number: cell_to_number(cells[1]),
-        deaths_number: cell_to_number(cells[2]),
-        recovered_number: cell_to_number(cells[5])
+        deaths_number: cell_to_number(cells[3]),
+        recovered_number: cell_to_number(cells[7])
       }
 
       entry = CountryStatisticalEntry.find_or_initialize_by(country: name)
