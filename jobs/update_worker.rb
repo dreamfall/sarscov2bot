@@ -21,7 +21,7 @@ class UpdateWorker
 
     tbody = doc.css("tbody")
 
-    numbers_row = tbody.css("tr")[3]
+    numbers_row = tbody.css("tr")[4]
     number_cells = numbers_row.css("td")
 
     attributes = {
@@ -50,7 +50,7 @@ class UpdateWorker
     updates = []
 
     # Skipping empty rows and headers
-    tbody.css("tr")[6..-1].each do |row|
+    tbody.css("tr")[7..-1].each do |row|
       cells = row.css("td")
       name = cells[0].text.delete("*")
 
