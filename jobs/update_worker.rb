@@ -58,7 +58,9 @@ class UpdateWorker
 
       attributes = {
         total_cases_number: cell_to_number(cells[1]),
+        daily_cases_number: cell_to_number(cells[2]),
         deaths_number: cell_to_number(cells[3]),
+        daily_deaths_number: cell_to_number(cells[4]),
         recovered_number: cell_to_number(cells[7])
       }
 
@@ -70,6 +72,8 @@ class UpdateWorker
         else
           updates << "#{name}:\n#{formatted_changes_by_country(attributes, entry)}"
         end
+
+        [:daily_cases_number, :daily_deaths_number].each { |k| attributes.delete(k) }
 
         entry.attributes = attributes
         entry.save
@@ -92,10 +96,12 @@ class UpdateWorker
 
     if attrs[:total_cases_number] != entry.total_cases_number
       changes << "Total #{formatted_growth(attrs[:total_cases_number],  entry.total_cases_number)}"
+      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0
     end
 
     if attrs[:deaths_number] != entry.deaths_number
       changes << "Deaths #{formatted_growth(attrs[:deaths_number], entry.deaths_number)}"
+      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0
     end
 
     if attrs[:recovered_number] != entry.recovered_number
