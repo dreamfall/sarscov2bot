@@ -96,12 +96,12 @@ class UpdateWorker
 
     if attrs[:total_cases_number] != entry.total_cases_number
       changes << "Total #{formatted_growth(attrs[:total_cases_number],  entry.total_cases_number)}"
-      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0
+      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0 && attrs[:total_cases_number] != attrs[:daily_cases_number]
     end
 
     if attrs[:deaths_number] != entry.deaths_number
       changes << "Deaths #{formatted_growth(attrs[:deaths_number], entry.deaths_number)}"
-      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0
+      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0 &&  attrs[:daily_deaths_number] != attrs[:deaths_number]
     end
 
     if attrs[:recovered_number] != entry.recovered_number
