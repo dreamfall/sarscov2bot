@@ -96,12 +96,12 @@ class UpdateWorker
 
     if attrs[:total_cases_number] != entry.total_cases_number
       changes << "Total #{formatted_growth(attrs[:total_cases_number],  entry.total_cases_number)}"
-      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0 && attrs[:total_cases_number] != attrs[:daily_cases_number]
+      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0 && attrs[:total_cases_number].to_i != attrs[:daily_cases_number].to_i
     end
 
     if attrs[:deaths_number] != entry.deaths_number
       changes << "Deaths #{formatted_growth(attrs[:deaths_number], entry.deaths_number)}"
-      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0 &&  attrs[:daily_deaths_number] != attrs[:deaths_number]
+      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0 &&  attrs[:daily_deaths_number].to_i != attrs[:deaths_number].to_i
     end
 
     if attrs[:recovered_number] != entry.recovered_number
@@ -122,11 +122,9 @@ class UpdateWorker
   end
 
   def update_channel_topic!(entry)
-    cfr = (entry.deaths_number.to_f / entry.total_cases_number * 100).round(2)
-
     infected = (entry.total_cases_number.to_f / TOTAL_POPULATION * 100).round(4)
 
-    title = "CoronaV [🦠#{number_with_delimiter(entry.total_cases_number)} / 💚 #{number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / CFR #{cfr}% / Infected #{infected}%]"
+    title = "CoronaV [🦠#{number_with_delimiter(entry.total_cases_number)} / 💚 #{number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / Infected #{infected}%]"
 
     Telegram::Bot::Client.run(ENV["TELEGRAM_TOKEN"]) do |bot|
       bot.api.setChatTitle(chat_id: ENV["CHAT_ID"], title: title)
