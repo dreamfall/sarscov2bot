@@ -96,16 +96,14 @@ class UpdateWorker
 
     if attrs[:total_cases_number] != entry.total_cases_number
       changes << "Total #{formatted_growth(attrs[:total_cases_number],  entry.total_cases_number)}"
-      puts 'Cases'
-      puts attrs[:total_cases_number].to_i, attrs[:daily_cases_number].to_i
-      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0 && attrs[:total_cases_number].to_i != attrs[:daily_cases_number].to_i
+      cases_diff = attrs[:total_cases_number] - entry.total_cases_number
+      changes << "Today: #{attrs[:daily_cases_number]}" if attrs[:daily_cases_number] > 0 && attrs[:daily_cases_number] != cases_diff
     end
 
     if attrs[:deaths_number] != entry.deaths_number
       changes << "Deaths #{formatted_growth(attrs[:deaths_number], entry.deaths_number)}"
-      puts 'Death'
-      puts attrs[:daily_deaths_number].to_i, attrs[:deaths_number].to_i
-      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0 && attrs[:daily_deaths_number].to_i != attrs[:deaths_number].to_i
+      deaths_diff = attrs[:deaths_number] - entry.deaths_number
+      changes << "Today: #{attrs[:daily_deaths_number]}" if attrs[:daily_deaths_number] > 0 && attrs[:daily_deaths_number] != deaths_diff
     end
 
     if attrs[:recovered_number] != entry.recovered_number
