@@ -126,11 +126,15 @@ class UpdateWorker
   def update_channel_topic!(entry)
     infected = (entry.total_cases_number.to_f / TOTAL_POPULATION * 100).round(4)
 
-    title = "CoronaV [🦠#{number_with_delimiter(entry.total_cases_number)} / 💚 #{number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / Infected #{infected}%]"
+    title = "CoronaV [🦠#{short_number_with_delimiter(entry.total_cases_number)} / 💚 #{short_number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / 🌍 #{infected}%]"
 
     Telegram::Bot::Client.run(ENV["TELEGRAM_TOKEN"]) do |bot|
       bot.api.setChatTitle(chat_id: ENV["CHAT_ID"], title: title)
     end
+  end
+
+  def short_number_with_delimiter(number)
+    number_with_delimiter(number).split(" ")[0..-2].join(" ") + "k"
   end
 
   def number_with_delimiter(number)
