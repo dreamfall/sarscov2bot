@@ -69,7 +69,7 @@ class UpdateWorker
       if entry.is_going_to_be_changed?(attributes)
         if entry.new_record?
           updates << "#{name} 🆕:\n#{formatted_changes_by_country(attributes, entry)}"
-        else
+        elsif entry.followed?
           updates << "#{name}:\n#{formatted_changes_by_country(attributes, entry)}"
         end
 
@@ -80,15 +80,19 @@ class UpdateWorker
       end
     end
 
-    send_message(updates.join("\n\n"))
+    send_message(updates.join("\n\n")) if updates.any?
   end
 
   def send_message(message)
     return unless message.present?
 
     Telegram::Bot::Client.run(ENV["TELEGRAM_TOKEN"]) do |bot|
-      bot.api.sendMessage(chat_id: ENV["CHAT_ID"], text: message)
+      bot.api.sendMessage(chat_id: chat_id, text: message)
     end
+  end
+
+  def chat_id
+    ENV["STAGING"] == "true" ? ENV["STAGING_CHAT_ID"] : ENV["CHAT_ID"]
   end
 
   def formatted_changes_by_country(attrs, entry)
@@ -129,7 +133,7 @@ class UpdateWorker
     title = "CoronaV [🦠#{short_number_with_delimiter(entry.total_cases_number)} / 💚 #{short_number_with_delimiter(entry.recovered_number)} / 💀#{number_with_delimiter(entry.deaths_number)} / 🌍 #{infected}%]"
 
     Telegram::Bot::Client.run(ENV["TELEGRAM_TOKEN"]) do |bot|
-      bot.api.setChatTitle(chat_id: ENV["CHAT_ID"], title: title)
+      bot.api.setChatTitle(chat_id: chat_id, title: title)
     end
   end
 
