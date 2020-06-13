@@ -22,7 +22,7 @@ class UpdateWorker
     attributes = {
       total_cases_number: cell_to_number(doc.css("#maincounter-wrap")[0].css(".maincounter-number span")),
       deaths_number: cell_to_number(doc.css("#maincounter-wrap")[1].css(".maincounter-number span")),
-      recovered_number: cell_to_number(doc.css("#maincounter-wrap")[1].css(".maincounter-number span"))
+      recovered_number: cell_to_number(doc.css("#maincounter-wrap")[2].css(".maincounter-number span"))
     }
 
     puts attributes
