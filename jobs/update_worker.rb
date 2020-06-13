@@ -10,24 +10,19 @@ require "dotenv"
 class UpdateWorker
   include Sidekiq::Worker
 
-  SPREADSHEET_URL = "https://docs.google.com/spreadsheets/u/0/d/e/2PACX-1vR30F8lYP3jG7YOq8es0PBpJIE5yvRVZffOyaqC0GgMBN6yt0Q-NI8pxS7hd1F9dYXnowSC6zpZmW9D/pubhtml/sheet?headers=false&gid=0"
+  WORLDOMETER_URL = "https://www.worldometers.info/coronavirus/"
 
   TOTAL_POPULATION = 7770000000
 
   def perform
     Dotenv.load
 
-    doc = Nokogiri::HTML(URI.open(SPREADSHEET_URL))
-
-    tbody = doc.css("tbody")
-
-    numbers_row = tbody.css("tr")[4]
-    number_cells = numbers_row.css("td")
+    doc = Nokogiri::HTML(URI.open(WORLDOMETER_URL))
 
     attributes = {
-      total_cases_number: cell_to_number(number_cells[0]),
-      deaths_number: cell_to_number(number_cells[1]),
-      recovered_number: cell_to_number(number_cells[2])
+      total_cases_number: cell_to_number(doc.css("#maincounter-wrap")[0].css(".maincounter-number span")),
+      deaths_number: cell_to_number(doc.css("#maincounter-wrap")[1].css(".maincounter-number span")),
+      recovered_number: cell_to_number(doc.css("#maincounter-wrap")[1].css(".maincounter-number span"))
     }
 
     puts attributes
@@ -38,7 +33,7 @@ class UpdateWorker
     if (!last_entry || new_entry.differs_to?(last_entry)) && new_entry.save
       update_channel_topic!(new_entry)
 
-      post_update_by_country!(tbody)
+      # post_update_by_country!(tbody)
     else
       puts "Stats unchanged. Skipping..."
     end
